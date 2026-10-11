@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ödeme – EforHug</title>
+<link rel="stylesheet" href="/styles.css?v=6">
+<link rel="preload" href="https://cdn.whop.com/elements/amber/elements.js" as="script">
+<script src="/cart.js?v=6" defer></script>
+</head>
+<body class="ck-page">
+<header class="ck-top">
+  <a href="/"><img src="/logo.avif" alt="EforHug"></a>
+</header>
+<main>
+  <section id="empty-state" class="ck-empty" hidden>
+    <h1>Sepetin boş</h1>
+    <p>Bir paket seç, burada görünsün.</p>
+    <a href="/collections/all">Alışverişe Devam Et</a>
+  </section>
+  <section id="checkout-state" class="ck-wrap">
+    <div class="ck-form">
+      <p id="error-message" class="ck-error" hidden></p>
+
+      <div class="ck-section">
+        <div class="ck-contact">
+          <div>
+            <h2 class="ck-heading">E-posta</h2>
+            <div id="ck-email" class="ck-email-slot"></div>
+          </div>
+          <div>
+            <div class="ck-phone-head">
+              <h2 class="ck-heading">Telefon</h2>
+              <button type="button" class="ck-info" id="phone-tip-btn" aria-label="Telefon bilgisi">i
+                <span class="ck-info-tip" role="tooltip">Siparişinizle ilgili olarak sizinle iletişime geçmemiz gerekirse</span>
+              </button>
+            </div>
+            <input class="ck-input" id="ck-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="534 714 59 62" name="phone">
+            <p class="ck-missing-hint" id="phone-missing" hidden>Bu alanı doldurun</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ck-section">
+        <h2 class="ck-heading">Teslimat</h2>
+        <div class="ck-own-address">
+          <div class="ck-tr-place">
+            <div class="ck-place-field">
+              <label class="ck-field-label" for="ck-ship-first">İsim</label>
+              <input class="ck-input" id="ck-ship-first" autocomplete="given-name" required>
+            </div>
+            <div class="ck-place-field">
+              <label class="ck-field-label" for="ck-ship-last">Soyisim</label>
+              <input class="ck-input" id="ck-ship-last" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="ck-place-field ck-street">
+            <label class="ck-field-label" for="ck-ship-street">Adres</label>
+            <input class="ck-input" id="ck-ship-street" autocomplete="street-address" required>
+          </div>
+          <div class="ck-tr-place">
+            <div class="ck-place-field">
+              <label class="ck-field-label" for="ck-ship-province">İl</label>
+              <select class="ck-input" id="ck-ship-province" autocomplete="address-level1" required>
+                <option value="">İl seçin</option>
+              </select>
+            </div>
+            <div class="ck-place-field">
+              <label class="ck-field-label" for="ck-ship-district">İlçe</label>
+              <input class="ck-input" id="ck-ship-district" placeholder="İlçe" autocomplete="address-level2" required>
+            </div>
+          </div>
+        </div>
+        <div class="ck-ship">
+          <h3>Kargo yöntemi</h3>
+          <div class="ck-ship-opt is-on">
+            <span class="ck-ship-main"><span class="ck-ship-name">Standart ücretsiz</span></span>
+            <span class="ck-ship-price">ÜCRETSİZ</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ck-section">
+        <h2 class="ck-heading">Güvenli ödeme</h2>
+        <p class="ck-secure">Tüm işlemler güvenli ve şifrelidir. Siparişiniz ücretsiz iade ve 7/24 müşteri hizmeti içerir.</p>
+        <div class="ck-panel">
+          <p id="panel-state" class="ck-panel-state">Ödeme bilgileri yükleniyor…</p>
+          <p id="panel-error" class="ck-panel-error" hidden></p>
+          <div id="payment-wrap" hidden>
+            <div id="ck-payment" class="ck-payment-slot"></div>
+            <label class="ck-billing-toggle">
+              <input type="checkbox" id="ck-billing-same" checked>
+              Fatura adresi teslimat adresiyle aynı
+            </label>
+            <div id="billing-fields" class="ck-billing-fields" hidden>
+              <div class="ck-own-address">
+                <div class="ck-tr-place">
+                  <div class="ck-place-field">
+                    <label class="ck-field-label" for="ck-bill-first">İsim</label>
+                    <input class="ck-input" id="ck-bill-first" autocomplete="given-name">
+                  </div>
+                  <div class="ck-place-field">
+                    <label class="ck-field-label" for="ck-bill-last">Soyisim</label>
+                    <input class="ck-input" id="ck-bill-last" autocomplete="family-name">
+                  </div>
+                </div>
+                <div class="ck-place-field ck-street">
+                  <label class="ck-field-label" for="ck-bill-street">Adres</label>
+                  <input class="ck-input" id="ck-bill-street" autocomplete="street-address">
+                </div>
+                <div class="ck-tr-place">
+                  <div class="ck-place-field">
+                    <label class="ck-field-label" for="ck-bill-province">İl</label>
+                    <select class="ck-input" id="ck-bill-province" autocomplete="address-level1">
+                      <option value="">İl seçin</option>
+                    </select>
+                  </div>
+                  <div class="ck-place-field">
+                    <label class="ck-field-label" for="ck-bill-district">İlçe</label>
+                    <input class="ck-input" id="ck-bill-district" placeholder="İlçe" autocomplete="address-level2">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="phone-step" class="ck-phone" hidden>
+          <p class="ck-phone-hint" id="phone-step-hint"></p>
+          <input class="ck-input" id="ck-phone-code" inputmode="numeric" autocomplete="one-time-code" placeholder="6 haneli kod" aria-label="Doğrulama kodu">
+          <button class="ck-link-button" type="button" id="resend-code">Yeni kod gönder</button>
+        </div>
+        <button class="ck-submit" type="button" id="pay-btn" disabled>Satın al</button>
+        <div id="ck-branding" class="ck-branding"></div>
+      </div>
+    </div>
+    <aside class="ck-summary">
+      <h2>Sipariş özeti</h2>
+      <ul id="summary-items" style="list-style:none;margin:0;padding:0"></ul>
+      <div class="ck-totals">
+        <div class="ck-totals-row"><span>Ara toplam</span><span id="summary-sub"></span></div>
+        <div class="ck-totals-row"><span>Kargo</span><span class="free">ÜCRETSİZ</span></div>
+        <div class="ck-totals-row is-total"><span>Toplam</span><span id="summary-total"></span></div>
+      </div>
+    </aside>
+  </section>
+</main>
+<p class="ck-foot"><a href="/gizlilik-politikasi">Gizlilik politikası</a> · <a href="/pages/contact">İletişim</a></p>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var GIFT_TITLE = '1 Adet EforHug Uyumlu Powerbank Hediye'
+  var GIFT_NOTE = 'sipariş kutuna eklenir'
+  var API_BASE = 'https://api.whop.com/api/v1'
+  var ELEMENTS_SRC = 'https://cdn.whop.com/elements/amber/elements.js'
+  var TR_PROVINCES = [
+    'Adana','Adıyaman','Afyonkarahisar','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir','Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli','Diyarbakır','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkâri','Hatay','Isparta','Mersin','İstanbul','İzmir','Kars','Kastamonu','Kayseri','Kırklareli','Kırşehir','Kocaeli','Konya','Kütahya','Malatya','Manisa','Kahramanmaraş','Mardin','Muğla','Muş','Nevşehir','Niğde','Ordu','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Tekirdağ','Tokat','Trabzon','Tunceli','Şanlıurfa','Uşak','Van','Yozgat','Zonguldak','Aksaray','Bayburt','Karaman','Kırıkkale','Batman','Şırnak','Bartın','Ardahan','Iğdır','Yalova','Karabük','Kilis','Osmaniye','Düzce'
+  ]
+  var C = window.EforHugCart
+  var items = C.getItems()
+  if (items.length === 0) {
+    document.getElementById('empty-state').hidden = false
+    document.getElementById('checkout-state').remove()
+    return
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    })
+  }
+  function fillProvinces(select) {
+    TR_PROVINCES.forEach(function (name) {
+      var opt = document.createElement('option')
+      opt.value = name
+      opt.textContent = name
+      select.appendChild(opt)
+    })
+  }
+  fillProvinces(document.getElementById('ck-ship-province'))
+  fillProvinces(document.getElementById('ck-bill-province'))
+
+  var total = C.orderTotal()
+  document.getElementById('summary-sub').textContent = C.money(total)
+  document.getElementById('summary-total').textContent = C.money(total)
+  var list = document.getElementById('summary-items')
+  var giftHost = items.findIndex(function (line) { return line.type !== 'powerbank' })
+  items.forEach(function (line, index) {
+    var li = document.createElement('li')
+    li.className = 'ck-item'
+    if (line.type === 'powerbank') {
+      li.innerHTML =
+        '<div class="ck-line"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug Uyumlu Powerbank</p><p class="ck-line-subtitle">Adet ' +
+        esc(line.qty || 1) +
+        '</p></div><div class="ck-line-prices"><p class="ck-line-original">' +
+        C.money(C.POWERBANK_COMPARE * (line.qty || 1)) +
+        '</p><p class="ck-line-price">' +
+        C.money(C.POWERBANK_PRICE * (line.qty || 1)) +
+        '</p></div></div>'
+    } else {
+      var pack = C.PACKS[line.packQty]
+      var img = C.COLOR_IMG[line.colors && line.colors[0]] || '/gri.webp'
+      var nested = ''
+      if (index === giftHost) {
+        nested +=
+          '<div class="ck-free"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">' +
+          GIFT_TITLE +
+          '</p><p class="ck-line-subtitle">' +
+          GIFT_NOTE +
+          '</p></div><div class="ck-line-prices"><p class="ck-line-price">ÜCRETSİZ</p></div></div>'
+      }
+      if (line.includePowerbank) {
+        nested +=
+          '<div class="ck-free"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug Uyumlu Powerbank</p><p class="ck-line-subtitle">ek ürün</p></div><div class="ck-line-prices"><p class="ck-line-price">' +
+          C.money(C.POWERBANK_PRICE) +
+          '</p></div></div>'
+      }
+      li.innerHTML =
+        '<div class="ck-line"><img src="' +
+        esc(img) +
+        '" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug™ Isıtmalı Battaniye</p><p class="ck-line-subtitle">' +
+        esc(pack.label) +
+        ' · ' +
+        esc((line.colors || []).join(' · ')) +
+        '</p></div><div class="ck-line-prices"><p class="ck-line-original">' +
+        C.money(pack.compare) +
+        '</p><p class="ck-line-price">' +
+        C.money(pack.price) +
+        '</p></div></div>' +
+        nested
+    }
+    list.appendChild(li)
+  })
+
+  function trPhoneDigits(raw) {
+    var digits = String(raw || '').replace(/\D/g, '')
+    if (digits.indexOf('90') === 0 && digits.length > 10) digits = digits.slice(2)
+    if (digits.charAt(0) === '0') digits = digits.slice(1)
+    return digits.slice(0, 10)
+  }
+  function formatTrPhone(raw) {
+    var digits = trPhoneDigits(raw)
+    var parts = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 8), digits.slice(8, 10)].filter(Boolean)
+    return parts.join(' ')
+  }
+  function trPhoneOk(raw) {
+    var digits = trPhoneDigits(raw)
+    return digits.length === 10 && /^[2-58]/.test(digits)
+  }
+  function trPhoneE164(raw) { return '+90' + trPhoneDigits(raw) }
+  function trPostalCode(province) {
+    var index = TR_PROVINCES.indexOf(province.trim())
+    if (index < 0) return '34000'
+    return String(index + 1).padStart(2, '0') + '000'
+  }
+  function personName(first, last) {
+    return [first, last].map(function (p) { return (p || '').trim() }).filter(Boolean).join(' ')
+  }
+  function cents(amount) {
+    var value = Number(amount == null ? 0 : amount)
+    return Number.isFinite(value) ? Math.round(value * 100) : 0
+  }
+  function returnUrl() {
+    return window.location.origin.replace(/\/$/, '') + '/siparis-tamam'
+  }
+  function showError(msg) {
+    var el = document.getElementById('error-message')
+    if (!msg) { el.hidden = true; el.textContent = ''; return }
+    el.textContent = msg
+    el.hidden = false
+  }
+  function buyerMessage(message, fallback) {
+    if (typeof message !== 'string' || !message) return fallback
+    var text = message.replace(/^[a-z_]+:\s*/, '')
+    var lower = text.toLowerCase()
+    if (/3d secure|three.?d.?secure|three_d_secure/.test(lower)) {
+      if (/timeout/.test(lower)) return '3D Secure doğrulaması zaman aşımına uğradı. Kartınızdan çekim olmadı, sayfada kalarak tekrar deneyin.'
+      return 'Banka 3D Secure doğrulamasını tamamlayamadı. SMS veya uygulama kodunu doğru girdiğinizden emin olup tekrar deneyin.'
+    }
+    if (/insufficient funds/.test(lower)) return 'Kartta yeterli bakiye yok. Başka bir kart deneyin.'
+    if (/declined/.test(lower)) return 'Kartınız reddedildi. Başka bir kart deneyin veya bankanızla iletişime geçin.'
+    return text
+  }
+  function checkoutHeaders() {
+    var wuid = document.cookie.match(/(?:^|;\s*)_wuid=(wuid_[A-Za-z0-9_-]{1,128})(?:;|$)/)
+    var headers = { 'Content-Type': 'application/json' }
+    if (wuid) headers['x-whop-anonymous-id'] = wuid[1]
+    return headers
+  }
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var existing = document.querySelector('script[src="' + src + '"]')
+      if (existing) {
+        if (existing.getAttribute('data-loaded') === 'true') { resolve(); return }
+        existing.addEventListener('load', function () { resolve() })
+        existing.addEventListener('error', function () { reject(new Error(src)) })
+        return
+      }
+      var script = document.createElement('script')
+      script.src = src
+      script.async = true
+      script.setAttribute('data-whop-elements', '')
+      script.addEventListener('load', function () { script.setAttribute('data-loaded', 'true'); resolve() })
+      script.addEventListener('error', function () { reject(new Error(src)) })
+      document.head.appendChild(script)
+    })
+  }
+  async function readJson(response) {
+    var body = await response.json().catch(function () { return null })
+    if (!response.ok) {
+      var raw = body && body.error && typeof body.error.message === 'string' ? body.error.message : ''
+      throw new Error(raw || 'Ödeme devam ettirilemedi.')
+    }
+    return body
+  }
+
+  var phoneInput = document.getElementById('ck-phone')
+  phoneInput.addEventListener('input', function () {
+    phoneInput.value = formatTrPhone(phoneInput.value)
+  })
+  document.getElementById('ck-billing-same').addEventListener('change', function () {
+    document.getElementById('billing-fields').hidden = this.checked
+  })
+  document.getElementById('phone-tip-btn').addEventListener('click', function () {
+    var open = this.getAttribute('aria-expanded') === 'true'
+    this.setAttribute('aria-expanded', open ? 'false' : 'true')
+  })
+
+  var session = null
+  var payments = null
+  var whop = null
+  var emailComplete = false
+  var emailValue = ''
+  var paymentComplete = false
+  var mounted = false
+  var submitting = false
+
+  function val(id) { return (document.getElementById(id).value || '').trim() }
+  function addressReady(prefix) {
+    return Boolean(val(prefix + '-first') && val(prefix + '-last') && val(prefix + '-street') && val(prefix + '-province') && val(prefix + '-district'))
+  }
+  function shippingPayload() {
+    var province = val('ck-ship-province')
+    var district = val('ck-ship-district')
+    var phone = phoneInput.value
+    return {
+      shipping_address: {
+        name: personName(val('ck-ship-first'), val('ck-ship-last')),
+        line1: val('ck-ship-street') || undefined,
+        line2: district || undefined,
+        city: province || district || undefined,
+        state: province || undefined,
+        postal_code: trPostalCode(province),
+        country: 'TR',
+      },
+      phone_number: trPhoneOk(phone) ? trPhoneE164(phone) : (phone.trim() || undefined),
+    }
+  }
+  function billingDetails() {
+    var same = document.getElementById('ck-billing-same').checked
+    var prefix = same ? 'ck-ship' : 'ck-bill'
+    var province = val(prefix + '-province')
+    var district = val(prefix + '-district')
+    return {
+      email: emailValue.trim(),
+      name: personName(val(prefix + '-first'), val(prefix + '-last')),
+      phone: trPhoneOk(phoneInput.value) ? trPhoneE164(phoneInput.value) : undefined,
+      address: {
+        name: personName(val(prefix + '-first'), val(prefix + '-last')),
+        line1: val(prefix + '-street') || undefined,
+        line2: district || undefined,
+        city: province || district || undefined,
+        state: province || undefined,
+        postal_code: trPostalCode(province),
+        country: 'TR',
+      },
+    }
+  }
+
+  async function patchSession(body) {
+    if (!session) throw new Error('Ödeme devam ettirilemedi.')
+    var response = await fetch(API_BASE + '/checkout_sessions/' + session.id, {
+      method: 'PATCH',
+      headers: checkoutHeaders(),
+      body: JSON.stringify(Object.assign({ client_secret: session.client_secret }, body)),
+    })
+    var updated = await readJson(response)
+    session = Object.assign({}, updated, { client_secret: updated.client_secret || session.client_secret })
+    return session
+  }
+  async function readSession() {
+    var response = await fetch(API_BASE + '/checkout_sessions/' + session.id + '?client_secret=' + encodeURIComponent(session.client_secret))
+    var updated = await readJson(response)
+    session = Object.assign({}, updated, { client_secret: updated.client_secret || session.client_secret })
+    return session
+  }
+  async function confirmSession(body) {
+    var response = await fetch(API_BASE + '/checkout_sessions/' + session.id + '/confirm', {
+      method: 'POST',
+      headers: checkoutHeaders(),
+      body: JSON.stringify(Object.assign({ client_secret: session.client_secret }, body)),
+    })
+    var updated = await readJson(response)
+    session = Object.assign({}, updated, { client_secret: updated.client_secret || session.client_secret })
+    return session
+  }
+  function completionUrl(current) {
+    var url = new URL(returnUrl())
+    if (current.payment && current.payment.id) {
+      url.searchParams.set('payment_id', current.payment.id)
+      if (current.payment.status) url.searchParams.set('status', current.payment.status)
+    }
+    if (current.id) url.searchParams.set('state_id', current.id)
+    return url.toString()
+  }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms) }) }
+
+  async function settle(first) {
+    var current = first
+    var failedReads = 0
+    for (var step = 0; step < 90; step += 1) {
+      var action = current.next_action
+      if (action && action.type === 'verify_phone') {
+        document.getElementById('phone-step').hidden = false
+        document.getElementById('phone-step-hint').textContent =
+          (action.phone_number || phoneInput.value) + ' numarasına bir kod gönderdik. Satın almayı tamamlamak için kodu girin.'
+        document.getElementById('pay-btn').textContent = 'Doğrula ve satın al'
+        return
+      }
+      if (current.last_confirm_error) {
+        throw new Error(buyerMessage(current.last_confirm_error.message, 'Ödemeniz tamamlanamadı.'))
+      }
+      if (action && action.type === 'complete' && action.client_secret) {
+        var outcome = await whop.payments.handleNextAction({ clientSecret: action.client_secret, pollIntervalMs: 800 })
+        if (outcome.redirected) return
+        if (outcome.lastPaymentError) throw new Error(buyerMessage(outcome.lastPaymentError.message, 'Ödemeniz tamamlanamadı.'))
+        if (outcome.status === 'requires_action') {
+          throw new Error('3D Secure doğrulaması tamamlanmadı. Kartınızdan çekim olmadı, tekrar deneyin.')
+        }
+        current = await readSession()
+        continue
+      }
+      if (action && action.type === 'wait_for_payment') {
+        await sleep(Math.max(1, action.poll_after_seconds || 2) * 1000)
+        current = await readSession()
+        continue
+      }
+      if (action && action.type === 'redirect' && action.destination_url) {
+        window.location.assign(action.destination_url)
+        return
+      }
+      if (action && action.blocking) {
+        throw new Error('Bu ödeme, bu sayfanın tamamlayamayacağı bir adım gerektiriyor. Lütfen mağaza ile iletişime geçin.')
+      }
+      var result = current.payment || current.entry
+      if (current.status === 'completed' && (!result || result.status !== 'failed')) {
+        window.location.assign(completionUrl(current))
+        return
+      }
+      if (result && result.status === 'failed') {
+        failedReads += 1
+        if (failedReads > 3) throw new Error('Ödemeniz gerçekleşmedi. Tekrar deneyin veya başka bir yöntem kullanın.')
+        await sleep(1000)
+        current = await readSession()
+        continue
+      }
+      throw new Error('Ödemeniz tamamlanamadı.')
+    }
+    throw new Error('Ödemeniz hâlâ işleniyor. Tekrar denemeden önce e-postanızda makbuz olup olmadığına bakın.')
+  }
+
+  function firstGap() {
+    if (!emailComplete) return 'Devam etmek için e-posta adresinizi girin.'
+    if (!trPhoneOk(phoneInput.value)) return 'Devam etmek için telefon numaranızı girin.'
+    if (!addressReady('ck-ship')) return 'Devam etmek için teslimat bilgilerini doldurun.'
+    if (!document.getElementById('ck-billing-same').checked && !addressReady('ck-bill')) {
+      return 'Devam etmek için fatura adresini doldurun.'
+    }
+    if (!paymentComplete) return 'Devam etmek için kart bilgilerinizi girin.'
+    return null
+  }
+
+  async function onPay() {
+    if (submitting) return
+    var phoneStep = !document.getElementById('phone-step').hidden
+    if (phoneStep) {
+      submitting = true
+      document.getElementById('pay-btn').disabled = true
+      showError('')
+      try {
+        var verified = await confirmSession({ phone_code: val('ck-phone-code') })
+        if (!verified.next_action || verified.next_action.type !== 'verify_phone') {
+          document.getElementById('phone-step').hidden = true
+        }
+        await settle(verified)
+      } catch (err) {
+        showError(err instanceof Error ? err.message : 'Bu kod çalışmadı. Tekrar deneyin.')
+      } finally {
+        submitting = false
+        document.getElementById('pay-btn').disabled = false
+      }
+      return
+    }
+    var gap = firstGap()
+    if (gap) { showError(gap); return }
+    if (!session || !mounted) { showError('Ödeme bilgileri yükleniyor. Biraz bekleyin.'); return }
+    submitting = true
+    document.getElementById('pay-btn').disabled = true
+    document.getElementById('pay-btn').textContent = 'İşleniyor…'
+    showError('')
+    try {
+      await patchSession(shippingPayload())
+      var token = await payments.createConfirmationToken({ billingDetails: billingDetails() })
+      var confirmed = await confirmSession({
+        confirmation_token: token.confirmationToken,
+        attestations: { tos_accepted: true },
+        expected_quoted_at: session.quote && session.quote.quoted_at,
+        phone_number: trPhoneE164(phoneInput.value),
+      })
+      await settle(confirmed)
+    } catch (err) {
+      showError(err instanceof Error ? buyerMessage(err.message, err.message) : 'Ödemeniz tamamlanamadı.')
+    } finally {
+      submitting = false
+      document.getElementById('pay-btn').disabled = false
+      if (document.getElementById('phone-step').hidden) {
+        document.getElementById('pay-btn').textContent = 'Satın al'
+      }
+    }
+  }
+
+  document.getElementById('pay-btn').addEventListener('click', function () { void onPay() })
+  document.getElementById('resend-code').addEventListener('click', async function () {
+    if (!session) return
+    try {
+      var response = await fetch(API_BASE + '/checkout_sessions/' + session.id + '/resend_phone_code', {
+        method: 'POST',
+        headers: checkoutHeaders(),
+        body: JSON.stringify({ client_secret: session.client_secret }),
+      })
+      if (!response.ok) await readJson(response)
+    } catch (err) {
+      showError(err instanceof Error ? err.message : 'Yeni kod gönderilemedi.')
+    }
+  })
+
+  ;(async function boot() {
+    var panelError = document.getElementById('panel-error')
+    var panelState = document.getElementById('panel-state')
+    try {
+      var scriptReady = loadScript(ELEMENTS_SRC)
+      var minted = await fetch('/api/checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lines: items, return_url: returnUrl() }),
+      })
+      var contentType = minted.headers.get('content-type') || ''
+      if (!contentType.includes('application/json')) {
+        throw new Error('Bu sayfa /api/checkout-session uç noktasına ulaşamıyor — bu dosyayı server.js ile birlikte kendi Node.js hosting\'inde çalıştırman gerekiyor (bkz. README.md).')
+      }
+      var json = await minted.json()
+      if (!minted.ok) throw new Error(json.error || 'Bilinmeyen hata')
+
+      var created = json
+      if (!created.sessionId || !created.clientSecret) {
+        if (!created.planId) throw new Error('Ödeme oturumu açılamadı.')
+        var sessionRes = await fetch(API_BASE + '/checkout_sessions', {
+          method: 'POST',
+          headers: checkoutHeaders(),
+          body: JSON.stringify({
+            items: [{ plan: created.planId, quantity: 1 }],
+            return_url: returnUrl(),
+          }),
+        })
+        created = await readJson(sessionRes)
+        created.sessionId = created.id
+        created.clientSecret = created.client_secret
+        created.accountId = (created.seller && created.seller.id) || (created.account && created.account.id) || json.accountId
+        created.currency = created.quote ? created.quote.currency : json.currency
+        created.quoteTotal = created.quote && created.quote.breakdown && created.quote.breakdown.total
+          ? created.quote.breakdown.total.amount
+          : json.amount
+        created.quotedAt = created.quote ? created.quote.quoted_at : null
+      }
+
+      session = {
+        id: created.sessionId || created.id,
+        client_secret: created.clientSecret || created.client_secret,
+        quote: created.quote || {
+          currency: created.currency || 'try',
+          quoted_at: created.quotedAt,
+          breakdown: { total: { amount: String(created.quoteTotal || created.amount || json.amount) } },
+        },
+        seller: created.seller,
+        account: created.account || { id: created.accountId || json.accountId },
+      }
+
+      await scriptReady
+      var amount = cents(session.quote.breakdown.total.amount)
+      whop = window.WhopElements({ environment: 'production', locale: 'tr' })
+      payments = whop.payments.create({
+        accountId: (session.seller || session.account).id,
+        currency: session.quote.currency,
+        amount: amount,
+        paymentMethodConfiguration: {
+          enabled: ['card'],
+          disabled: [],
+          include_platform_defaults: false,
+        },
+        checkoutSession: {
+          id: session.id,
+          clientSecret: session.client_secret,
+        },
+        returnUrl: returnUrl(),
+        appearance: {
+          theme: { appearance: 'light' },
+          fontFamily: 'Poppins, Arial, sans-serif',
+          classes: {
+            'whop-Payment': {
+              fontSize: '14px',
+              color: '#111111',
+              fontFamily: 'Poppins, Arial, sans-serif',
+            },
+          },
+        },
+      })
+      var branding = payments.create('branding')
+      branding.mount(document.getElementById('ck-branding'))
+      var emailElement = payments.create('email', {
+        onChange: function (payload) {
+          emailComplete = Boolean(payload && payload.complete)
+          emailValue = payload && payload.email ? payload.email : ''
+        },
+        onError: function (event) {
+          panelError.textContent = event.message
+          panelError.hidden = false
+        },
+      })
+      emailElement.mount(document.getElementById('ck-email'))
+      var paymentElement = payments.create('payment', {
+        fields: { billingDetails: 'never' },
+        order: ['card'],
+        wallets: { applePay: 'never', googlePay: 'never', payPal: 'never' },
+        onChange: function (payload) {
+          paymentComplete = Boolean(payload && payload.complete)
+        },
+        onError: function (event) {
+          panelError.textContent = event.message
+          panelError.hidden = false
+        },
+      })
+      paymentElement.mount(document.getElementById('ck-payment'))
+      mounted = true
+      panelState.hidden = true
+      document.getElementById('payment-wrap').hidden = false
+      document.getElementById('pay-btn').disabled = false
+    } catch (err) {
+      panelState.hidden = true
+      panelError.hidden = false
+      panelError.textContent = err instanceof Error ? buyerMessage(err.message, err.message) : 'Bu ödeme sayfası açılamadı.'
+      showError(panelError.textContent)
+    }
+  })()
+})
+</script>
+</body>
+</html>
