@@ -154,6 +154,7 @@ app.post('/api/checkout-session', async (req, res) => {
         redirect_url: returnUrl || undefined,
         payment_method_configuration: {
           enabled: ['card'],
+          disabled: [],
           include_platform_defaults: false,
         },
         plan: {
@@ -165,6 +166,7 @@ app.post('/api/checkout-session', async (req, res) => {
           initial_price: amount,
           payment_method_configuration: {
             enabled: ['card'],
+            disabled: [],
             include_platform_defaults: false,
           },
         },
