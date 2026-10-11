@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EforHug</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/cart.js" defer></script>
+</head>
+<body>
+<div data-eh-header></div>
+<main>
+  <a class="eh-home-hero" href="/products/cozywarm-tasinabilir-isitmali-battaniye">
+    <img src="/hero.webp" alt="SICAKLIK ARTIK SENİNLE">
+  </a>
+  <div class="eh-marquee" style="background:#8f5436;color:#fff;padding:10px 0;font-size:14px;font-weight:500">
+    <div class="eh-marquee-track" id="home-ticker">
+      <span style="padding:0 48px;flex-shrink:0">Memnuniyet Garantisi</span>
+      <span style="padding:0 48px;flex-shrink:0">Aşkınız Gibi Sonsuz!</span>
+      <span style="padding:0 48px;flex-shrink:0">2. Ürüne +%10 İndirim!</span>
+    </div>
+  </div>
+  <section class="eh-headline">
+    <svg viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden class="eh-waves">
+      <path fill="#fffdfc" d="M0 0h1440v38c-110 70-240 8-380 48-150 44-240-38-390 8-140 44-210-20-350 18C200 136 90 48 0 78V0Z"/>
+      <path fill="#c17a4a" d="M0 86c130-52 250 48 400 6 160-46 250 52 410 8 150-42 250 40 380-4 90-30 170 22 250 4v70H0Z"/>
+    </svg>
+    <h2 style="margin:0;padding:28px 20px 18px;text-align:center;color:#fff;font-style:italic;font-weight:700;letter-spacing:0.04em;font-size:clamp(22px,2.6vw,34px);text-transform:uppercase">SICAKLIK ARTIK SENİNLE</h2>
+    <div class="eh-marquee" style="color:#fff;padding:8px 0 20px;font-size:14px;font-weight:600;font-style:italic;letter-spacing:0.08em">
+      <div class="eh-marquee-track eh-marquee-slow" id="trust-ticker">
+        <span style="padding:0 40px;flex-shrink:0">MEMNUNİYET GARANTİSİ</span>
+        <span style="padding:0 40px;flex-shrink:0">%100 PARA İADE GARANTİSİ</span>
+        <span style="padding:0 40px;flex-shrink:0">+1000 MUTLU MÜŞTERİ</span>
+      </div>
+    </div>
+    <svg viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden class="eh-waves eh-waves-bottom">
+      <path fill="#c17a4a" d="M0 40c140 56 260-40 420 8 170 50 250-46 410 6 150 50 260-30 390 12 90 30 150-18 220 8v96H0Z"/>
+      <path fill="#fffdfc" d="M0 78c120 50 250-36 390 10 160 52 250-40 410 8 150 46 270-28 400 14 90 28 160-16 240 6V160H0Z"/>
+    </svg>
+  </section>
+  <section style="background:#fffdfc;padding:4px 16px 28px">
+    <div class="eh-trust eh-features-desktop">
+      <article>
+        <span class="material-symbols-outlined">package_2</span>
+        <div>
+          <h3>Ücretsiz Kargo</h3>
+          <p>Ürünlerimizi Türkiye'nin her yerine ücretsiz ve mümkün olan en hızlı şekilde gönderiyoruz.</p>
+        </div>
+      </article>
+      <article>
+        <span class="material-symbols-outlined">lock</span>
+        <div>
+          <h3>100% Güvenli Ödeme</h3>
+          <p>Ödemeleriniz %100 güvenli ve şifrelidir. MasterCard, Visa tarafından korunmaktadır.</p>
+        </div>
+      </article>
+      <article>
+        <span class="material-symbols-outlined">keyboard_return</span>
+        <div>
+          <h3>İade Garantisi</h3>
+          <p>Herhangi bir kusurlu ürün veya sorun olması durumunda bizimle iletişime geçmekten çekinmeyin!</p>
+        </div>
+      </article>
+    </div>
+    <div class="eh-features-mobile" style="max-width:520px;margin:0 auto">
+      <article class="eh-trust-card" id="feat-card" style="display:flex;gap:16px;align-items:flex-start;background:#faf4ee;border-radius:20px;padding:16px 16px 16px 14px">
+        <span class="material-symbols-outlined" style="color:#b86f43;font-size:28px">package_2</span>
+        <div>
+          <h3 style="margin:0 0 8px;font-size:16px">Ücretsiz Kargo</h3>
+          <p style="margin:0;color:#6b5147;font-size:14px;line-height:1.55">Ürünlerimizi Türkiye'nin her yerine ücretsiz ve mümkün olan en hızlı şekilde gönderiyoruz.</p>
+        </div>
+      </article>
+      <div class="eh-dots" id="feat-dots"></div>
+    </div>
+  </section>
+  <div class="eh-toast" id="home-toast">
+    <a href="/products/powerbank">
+      <img src="/powerbank.webp" alt="EforHug Uyumlu Powerbank">
+      <div>
+        <p><strong>Tulin A. from Kutahya, Turkey</strong> az önce satın aldı “EforHug Uyumlu Powerbank”</p>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+          <span style="text-decoration:line-through;color:#8a6a58;font-size:12px">1,499.00TL</span>
+          <span style="background:#3a2a22;color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px">499.00TL</span>
+        </div>
+      </div>
+    </a>
+    <button type="button" class="eh-toast-x" aria-label="Kapat" id="toast-x">×</button>
+  </div>
+</main>
+<div data-eh-footer></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function loop(id) {
+    var t = document.getElementById(id)
+    if (!t) return
+    t.innerHTML += t.innerHTML + t.innerHTML + t.innerHTML
+  }
+  loop('home-ticker')
+  loop('trust-ticker')
+  document.getElementById('toast-x').onclick = function () {
+    document.getElementById('home-toast').style.display = 'none'
+  }
+  var feats = [
+    { icon: 'package_2', title: 'Ücretsiz Kargo', body: "Ürünlerimizi Türkiye'nin her yerine ücretsiz ve mümkün olan en hızlı şekilde gönderiyoruz." },
+    { icon: 'lock', title: '100% Güvenli Ödeme', body: 'Ödemeleriniz %100 güvenli ve şifrelidir. MasterCard, Visa tarafından korunmaktadır.' },
+    { icon: 'keyboard_return', title: 'İade Garantisi', body: 'Herhangi bir kusurlu ürün veya sorun olması durumunda bizimle iletişime geçmekten çekinmeyin!' },
+  ]
+  var i = 0
+  var card = document.getElementById('feat-card')
+  var dots = document.getElementById('feat-dots')
+  function drawFeat() {
+    var f = feats[i]
+    card.innerHTML = '<span class="material-symbols-outlined" style="color:#b86f43;font-size:28px">' + f.icon + '</span><div><h3 style="margin:0 0 8px;font-size:16px">' + f.title + '</h3><p style="margin:0;color:#6b5147;font-size:14px;line-height:1.55">' + f.body + '</p></div>'
+    dots.innerHTML = feats.map(function (_, n) {
+      return '<button type="button" class="' + (n === i ? 'is-on' : '') + '" data-feat="' + n + '"></button>'
+    }).join('')
+  }
+  drawFeat()
+  dots.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-feat]')
+    if (!b) return
+    i = Number(b.getAttribute('data-feat'))
+    drawFeat()
+  })
+  window.setInterval(function () { i = (i + 1) % feats.length; drawFeat() }, 2000)
+})
+</script>
+</body>
+</html>
