@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sipariş alındı – EforHug</title>
+<link rel="stylesheet" href="/styles.css?v=5">
+<script src="/cart.js?v=5" defer></script>
+</head>
+<body>
+<div data-eh-header></div>
+<main class="ck-empty">
+  <h1>Siparişin alındı</h1>
+  <p>Ödeme onayı e-postana gelecek. Kargo durumunu sipariş numarası ve e-posta ile takip edebilirsin.</p>
+  <p><a href="/siparis-takip">Sipariş takip</a></p>
+  <a href="/">Alışverişe Devam Et</a>
+</main>
+<div data-eh-footer></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.EforHugCart && typeof window.EforHugCart.clear === 'function') {
+    window.EforHugCart.clear()
+  }
+})
+</script>
+</body>
+</html>
