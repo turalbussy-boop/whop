@@ -247,6 +247,10 @@ app.get('/cart.js', (req, res) => {
   res.set('Content-Type', 'application/javascript; charset=utf-8')
   res.sendFile(path.join(__dirname, 'cart.js'))
 })
+app.get('/reviews.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript; charset=utf-8')
+  res.sendFile(path.join(__dirname, 'reviews.js'))
+})
 
 const page = (name) => (req, res) => {
   res.set('Content-Type', 'text/html; charset=utf-8')
