@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ödeme – EforHug</title>
-<link rel="stylesheet" href="/styles.css">
-<script src="/cart.js" defer></script>
+<link rel="stylesheet" href="/styles.css?v=4">
+<script src="/cart.js?v=4" defer></script>
 </head>
 <body class="ck-page">
 <header class="ck-top">
@@ -18,23 +18,24 @@
     <a href="/collections/all">Alışverişe Devam Et</a>
   </section>
   <section id="checkout-state" class="ck-wrap">
-    <div>
+    <div class="ck-form">
       <p id="error-message" class="ck-error" hidden></p>
-      <h1 style="font-size:22px;margin:0 0 16px;color:#6b5147">Kargo ve ödeme</h1>
-      <p style="margin:0 0 16px;color:#8a7468;font-size:14px">Ödeme Whop üzerinden alınır. Kart bilgilerin bu sitede saklanmaz.</p>
       <div id="embed-container" class="ck-embed">
         <div id="embed-placeholder" style="padding:24px;color:#8a7468">Ödeme hazırlanıyor…</div>
       </div>
     </div>
     <aside class="ck-summary">
-      <h2 style="margin:0 0 12px;font-size:16px">Sipariş özeti</h2>
+      <h2>Sipariş özeti</h2>
       <ul id="summary-items" style="list-style:none;margin:0;padding:0"></ul>
-      <div style="display:flex;justify-content:space-between;margin-top:16px;font-size:14px"><span>Kargo</span><strong>ÜCRETSİZ</strong></div>
-      <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:18px;font-weight:800;color:#b86f43"><span>Toplam</span><span id="summary-total"></span></div>
+      <div class="ck-totals">
+        <div class="ck-totals-row"><span>Ara toplam</span><span id="summary-sub"></span></div>
+        <div class="ck-totals-row"><span>Kargo</span><span class="free">ÜCRETSİZ</span></div>
+        <div class="ck-totals-row is-total"><span>Toplam</span><span id="summary-total"></span></div>
+      </div>
     </aside>
   </section>
 </main>
-<p class="ck-foot"><a href="/gizlilik-politikasi">Gizlilik politikası</a> · <a href="/pages/contact">Forum</a></p>
+<p class="ck-foot"><a href="/gizlilik-politikasi">Gizlilik politikası</a> · <a href="/pages/contact">İletişim</a></p>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var C = window.EforHugCart
@@ -44,18 +45,56 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('checkout-state').remove()
     return
   }
-  document.getElementById('summary-total').textContent = C.money(C.orderTotal())
+  var total = C.orderTotal()
+  document.getElementById('summary-sub').textContent = C.money(total)
+  document.getElementById('summary-total').textContent = C.money(total)
   var list = document.getElementById('summary-items')
-  items.forEach(function (line) {
+  var giftHost = items.findIndex(function (line) {
+    return line.type !== 'powerbank'
+  })
+  items.forEach(function (line, index) {
     var li = document.createElement('li')
-    li.style.cssText = 'display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #ead9cc'
+    li.className = 'ck-item'
     if (line.type === 'powerbank') {
-      li.innerHTML = '<img src="/powerbank.webp" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:10px;background:#1a1a1a"><div style="flex:1"><strong>EforHug Uyumlu Powerbank</strong><p style="margin:4px 0 0;font-size:12px;color:#8a7468">Adet ' + (line.qty || 1) + '</p></div><span>' + C.money(C.POWERBANK_PRICE * (line.qty || 1)) + '</span>'
+      li.innerHTML =
+        '<div class="ck-line"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug Uyumlu Powerbank</p><p class="ck-line-subtitle">Adet ' +
+        (line.qty || 1) +
+        '</p></div><div class="ck-line-prices"><p class="ck-line-original">' +
+        C.money(C.POWERBANK_COMPARE * (line.qty || 1)) +
+        '</p><p class="ck-line-price">' +
+        C.money(C.POWERBANK_PRICE * (line.qty || 1)) +
+        '</p></div></div>'
     } else {
       var pack = C.PACKS[line.packQty]
       var img = C.COLOR_IMG[line.colors && line.colors[0]] || '/gri.webp'
-      var extra = line.includePowerbank ? ' + Powerbank' : ' · hediye powerbank'
-      li.innerHTML = '<img src="' + img + '" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:10px"><div style="flex:1"><strong>' + pack.label + '</strong><p style="margin:4px 0 0;font-size:12px;color:#8a7468">' + (line.colors || []).join(', ') + extra + '</p></div><span>' + C.money(pack.price + (line.includePowerbank ? C.POWERBANK_PRICE : 0)) + '</span>'
+      var nested = ''
+      if (index === giftHost) {
+        nested +=
+          '<div class="ck-free"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">' +
+          C.POWERBANK_GIFT_TITLE +
+          '</p><p class="ck-line-subtitle">' +
+          C.POWERBANK_GIFT_NOTE +
+          '</p></div><div class="ck-line-prices"><p class="ck-line-price">ÜCRETSİZ</p></div></div>'
+      }
+      if (line.includePowerbank) {
+        nested +=
+          '<div class="ck-free"><img src="/powerbank.webp" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug Uyumlu Powerbank</p><p class="ck-line-subtitle">ek ürün</p></div><div class="ck-line-prices"><p class="ck-line-price">' +
+          C.money(C.POWERBANK_PRICE) +
+          '</p></div></div>'
+      }
+      li.innerHTML =
+        '<div class="ck-line"><img src="' +
+        img +
+        '" alt=""><div class="ck-line-body"><p class="ck-line-title">EforHug™ Isıtmalı Battaniye</p><p class="ck-line-subtitle">' +
+        pack.label +
+        ' · ' +
+        (line.colors || []).join(' · ') +
+        '</p></div><div class="ck-line-prices"><p class="ck-line-original">' +
+        C.money(pack.compare) +
+        '</p><p class="ck-line-price">' +
+        C.money(pack.price) +
+        '</p></div></div>' +
+        nested
     }
     list.appendChild(li)
   })
