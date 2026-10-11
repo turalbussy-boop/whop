@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EforHug Uyumlu Powerbank</title>
+<link rel="stylesheet" href="/styles.css?v=5">
+<script src="/cart.js?v=5" defer></script>
+</head>
+<body>
+<div data-eh-header></div>
+<main class="eh-pb">
+  <img class="main" src="/powerbank.webp" alt="EforHug Uyumlu Powerbank">
+  <div>
+    <h1 class="eh-title">EforHug Uyumlu Powerbank</h1>
+    <div class="eh-price-row">
+      <span class="eh-price">499.00TL</span>
+      <span class="eh-compare">1,499.00TL</span>
+      <span class="eh-badge">-66%İndirim</span>
+    </div>
+    <ul class="eh-bullets">
+      <li>🔋  EforHug battaniye ile 8 saate kadar kullanım</li>
+      <li>⚡  Hızlı şarj, taşınabilir tasarım</li>
+      <li>🎁  Battaniye paketlerinde hediye olarak da eklenir</li>
+    </ul>
+    <button type="button" class="eh-atc" id="atc">SEPETE EKLE</button>
+    <div class="eh-pay">
+      <img src="https://content.whop.com/payment_methods/visa/icons/card_light.svg" alt="Visa" height="30">
+      <img src="https://content.whop.com/payment_methods/mastercard/icons/card_light.svg" alt="Mastercard" height="30">
+      <img src="https://content.whop.com/payment_methods/amex/icons/card_light.svg" alt="American Express" height="30">
+    </div>
+  </div>
+</main>
+<div data-eh-footer></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('atc').onclick = function () {
+    window.EforHugCart.addPowerbank(1)
+  }
+})
+</script>
+</body>
+</html>
