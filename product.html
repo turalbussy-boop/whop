@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EforHug™ Isıtmalı Battaniye – Mağazam</title>
-<link rel="stylesheet" href="/styles.css">
-<script src="/cart.js" defer></script>
+<link rel="stylesheet" href="/styles.css?v=4">
+<script src="/reviews.js"></script>
+<script src="/cart.js?v=4" defer></script>
 </head>
 <body>
 <div data-eh-header></div>
@@ -40,11 +41,6 @@
       </ul>
       <div class="eh-scarce">SON 6 ADET BATTANİYE</div>
       <div class="eh-packs" id="packs"></div>
-      <div class="eh-gift" style="margin-top:12px">
-        <img src="/powerbank.webp" alt="">
-        <span>🎁 1 Adet EforHug Uyumlu Powerbank Hediye</span>
-        <span class="eh-gift-was">1,499TL</span>
-      </div>
       <div class="eh-save">→ Bu siparişte <strong id="save-amt">1,911TL</strong> tasarruf ediyorsun</div>
       <button type="button" class="eh-atc" id="atc">SEPETE EKLE</button>
       <div class="eh-bump">
@@ -124,7 +120,7 @@
         <h3>Müşteri Değerlendirmeleri</h3>
         <div class="eh-rev-score">4.9 <span>109 değerlendirmeler</span></div>
       </div>
-      <button type="button" class="eh-write">Değerlendirme yazın</button>
+      <button type="button" class="eh-write" id="write-review">Değerlendirme yazın</button>
     </div>
     <div id="reviews"></div>
     <div class="eh-pages" id="rev-pages"></div>
@@ -151,6 +147,12 @@
     <button type="button" class="eh-color-confirm" id="color-ok">Onayla</button>
   </div>
 </div>
+<div id="rev-modal" class="eh-rev-overlay" hidden>
+  <div class="eh-rev-modal" role="dialog" aria-modal="true">
+    <button type="button" class="eh-rev-x" id="rev-x" aria-label="Kapat">×</button>
+    <div id="rev-step"></div>
+  </div>
+</div>
 <div data-eh-footer></div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -158,6 +160,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var packQty = 1
   var color = 'Gri'
   var includePb = false
+  var packColors = ['Gri']
+  var packColorsReady = true
   var gallery = ['/g1.webp','/g2.webp','/g3.webp','/g4.webp','/g5.webp','/g6.webp','/g7.webp','/gri.webp','/pembe.webp']
   var gIndex = 0
   var thumbs = document.getElementById('thumbs')
@@ -193,6 +197,15 @@ document.addEventListener('DOMContentLoaded', function () {
       return '<button type="button" class="eh-swatch' + (v === selected ? ' is-on' : '') + '" data-color="' + v + '"><span class="eh-swatch-dot" style="background:' + (v === 'Pembe' ? '#e7a4b5' : '#8f8c88') + '"></span>' + v + '</button>'
     }).join('')
   }
+  function unitRowsHTML() {
+    if (packQty < 2) return ''
+    return '<div class="eh-pack-units">' + packColors.map(function (c, i) {
+      return '<div class="eh-color-row"><img src="' + C.COLOR_IMG[c] + '" alt=""><div><span class="eh-color-label">' + (i + 1) + '. Battaniye</span><span class="eh-swatches">' +
+        C.COLORS.map(function (v) {
+          return '<button type="button" class="eh-swatch' + (v === c ? ' is-on' : '') + '" data-unit="' + i + '" data-color="' + v + '"><span class="eh-swatch-dot" style="background:' + (v === 'Pembe' ? '#e7a4b5' : '#8f8c88') + '"></span>' + v + '</button>'
+        }).join('') + '</span></div></div>'
+    }).join('') + '</div>'
+  }
   function renderPacks() {
     var el = document.getElementById('packs')
     var packs = [
@@ -208,18 +221,27 @@ document.addEventListener('DOMContentLoaded', function () {
         (p.sub ? '<span class="eh-pack-sub">' + p.sub + '</span>' : '') +
         (p.qty === 1 ? '<span class="eh-swatches">' + swatches(color) + '</span>' : '') +
         '</span><span class="eh-pack-price">' + C.money(p.price) + '<span class="eh-pack-was">' + moneyInt(p.was) + '</span></span></div>'
-    }).join('')
+    }).join('') +
+      unitRowsHTML() +
+      '<div class="eh-gift"><img src="/powerbank.webp" alt=""><span>1 Adet EforHug Uyumlu Powerbank Hediye</span><span class="eh-gift-was">1,499TL</span></div>'
     var pack = C.PACKS[packQty]
     document.getElementById('save-amt').textContent = moneyInt(pack.compare - pack.price)
-    document.getElementById('live-price').textContent = C.money(pack.price)
-    document.getElementById('sticky-price').innerHTML = C.money(pack.price) + ' <span style="text-decoration:line-through;opacity:.75">3,760.00TL</span>'
   }
   renderPacks()
   document.getElementById('packs').addEventListener('click', function (e) {
+    var unitBtn = e.target.closest('[data-unit]')
+    if (unitBtn) {
+      e.stopPropagation()
+      packColors[Number(unitBtn.getAttribute('data-unit'))] = unitBtn.getAttribute('data-color')
+      packColorsReady = true
+      renderPacks()
+      return
+    }
     var sw = e.target.closest('[data-color]')
     if (sw) {
       e.stopPropagation()
       color = sw.getAttribute('data-color')
+      packColors[0] = color
       document.getElementById('sticky-color').value = color
       main.src = C.COLOR_IMG[color]
       renderPacks()
@@ -228,6 +250,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var p = e.target.closest('[data-pack]')
     if (!p) return
     packQty = Number(p.getAttribute('data-pack'))
+    if (packQty > 1) {
+      while (packColors.length < packQty) packColors.push(color)
+      packColors = packColors.slice(0, packQty)
+      packColorsReady = true
+    } else {
+      packColors = [color]
+      packColorsReady = true
+    }
     renderPacks()
   })
   document.getElementById('pb-toggle').addEventListener('click', function () {
@@ -259,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function openColorModal() {
     var pack = C.PACKS[packQty]
     pendingColors = []
-    for (var i = 0; i < pack.qty; i += 1) pendingColors.push(color)
+    for (var i = 0; i < pack.qty; i += 1) pendingColors.push(packColors[i] || color)
     document.getElementById('color-sub').textContent = pack.qty + ' Adet Isıtmalı Battaniye'
     drawColorList()
     modal.classList.add('is-on')
@@ -284,17 +314,30 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.target === modal) closeColorModal()
   })
   document.getElementById('color-ok').onclick = function () {
-    C.addBlanket(packQty, pendingColors, includePb)
+    packColors = pendingColors.slice()
+    packColorsReady = true
     closeColorModal()
   }
   function addToCart() {
-    if (packQty === 1) C.addBlanket(1, [color], includePb)
-    else openColorModal()
+    if (packQty > 1 && !packColorsReady) {
+      openColorModal()
+      return
+    }
+    var colors =
+      packQty === 1
+        ? [color]
+        : packColors.length === packQty
+          ? packColors
+          : pendingColors.length === packQty
+            ? pendingColors
+            : Array.from({ length: packQty }, function () { return color })
+    C.addBlanket(packQty, colors, includePb)
   }
   document.getElementById('atc').onclick = addToCart
   document.getElementById('sticky-atc').onclick = addToCart
   document.getElementById('sticky-color').onchange = function () {
     color = this.value
+    packColors[0] = color
     main.src = C.COLOR_IMG[color]
     renderPacks()
   }
@@ -302,17 +345,120 @@ document.addEventListener('DOMContentLoaded', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  var REVIEWS = [
-    { name: 'Sinem E.', date: '09/16/2026', title: 'eforhug kalitesi', body: 'kardeşime kış hediyesi aldım kumaşı efsane polar kalitesi süper şarjı bir tık hızlı bitiyor ama ısıtması muazzam paketleme özenliydi teşekkürler alın aldırın :)' },
-    { name: 'Cansu Ç.', date: '09/14/2026', title: 'Kesinlikle alın', body: 'sevgilime hediye olarak siparis ettim rengi fotograftakinden daha canli soguk kis gunleri icin birebir musteri hizmetleri cok ilgiliydi alin aldirin' },
-    { name: 'Deniz N.', date: '09/14/2026', title: 'harika', body: 'kışlık kendim için aldım kumaşı efsane polar kalitesi süper 3. kademede terletiyor bile hemen kargoya verildi şaşırdım her kuruşunu hakediyor :)' },
-    { name: 'Pelin Y.', date: '09/12/2026', title: 'mükemmel', body: 'evden çalışan biri olarak kendime aldım kumaşı efsane polar kalitesi süper masa başında çalışırken belimi sıcacık tuttu bir tane daha sipariş edicem :)' },
-    { name: 'Furkan S.', date: '09/12/2026', title: 'Sımsıcak', body: 'anneme hediye aldım giyer giymez ısınmaya başlıyorsunuz kombiyi kıstırır cidden çok iyi ısıtıyor hemen kargoya verildi şaşırdım tavsiye ederim' },
-  ]
-  document.getElementById('reviews').innerHTML = REVIEWS.map(function (r) {
-    return '<article class="eh-review"><div class="eh-stars">★★★★★</div><div class="eh-who"><span class="eh-av">' + r.name.charAt(0) + '</span><div><strong>' + r.name + '</strong><small>' + r.date + '</small></div></div><h4>' + r.title + '</h4><p>' + r.body + '</p></article>'
-  }).join('')
-  document.getElementById('rev-pages').innerHTML = '<button type="button">‹</button><button type="button" class="is-on">1</button><button type="button">2</button><span class="eh-pages-ellipsis">…</span><button type="button">22</button><button type="button">›</button>'
+  var REVIEWS = Array.isArray(window.EFORHUG_REVIEWS) && window.EFORHUG_REVIEWS.length
+    ? window.EFORHUG_REVIEWS
+    : [
+      { name: 'Sinem E.', date: '09/16/2026', title: 'eforhug kalitesi', body: 'kardeşime kış hediyesi aldım kumaşı efsane polar kalitesi süper şarjı bir tık hızlı bitiyor ama ısıtması muazzam paketleme özenliydi teşekkürler alın aldırın :)', rating: 5 },
+    ]
+  var PER_PAGE = 5
+  var TOTAL_PAGES = Math.max(1, Math.ceil(REVIEWS.length / PER_PAGE))
+  var revPage = 1
+  function stars(n) {
+    var count = n || 5
+    return '★★★★★'.slice(0, count) + '☆☆☆☆☆'.slice(0, Math.max(0, 5 - count))
+  }
+  function renderReviews() {
+    var start = (revPage - 1) * PER_PAGE
+    var slice = REVIEWS.slice(start, start + PER_PAGE)
+    document.getElementById('reviews').innerHTML = slice.map(function (r) {
+      return '<article class="eh-review"><div class="eh-stars">' + stars(r.rating) + '</div><div class="eh-who"><span class="eh-av">' + r.name.charAt(0) + '</span><div><strong>' + r.name + '</strong><small>' + r.date + '</small></div></div><h4>' + r.title + '</h4><p>' + r.body + '</p></article>'
+    }).join('')
+    var items = [1]
+    var from = Math.max(2, revPage - 1)
+    var to = Math.min(TOTAL_PAGES - 1, revPage + 1)
+    if (from > 2) items.push('…')
+    for (var i = from; i <= to; i += 1) items.push(i)
+    if (to < TOTAL_PAGES - 1) items.push('…')
+    if (TOTAL_PAGES > 1) items.push(TOTAL_PAGES)
+    var html = '<button type="button" data-rev-nav="prev" aria-label="Önceki">‹</button>'
+    items.forEach(function (item) {
+      if (item === '…') html += '<span class="eh-pages-ellipsis">…</span>'
+      else html += '<button type="button" data-rev-page="' + item + '"' + (item === revPage ? ' class="is-on"' : '') + '>' + item + '</button>'
+    })
+    html += '<button type="button" data-rev-nav="next" aria-label="Sonraki">›</button>'
+    document.getElementById('rev-pages').innerHTML = html
+  }
+  renderReviews()
+  document.getElementById('rev-pages').addEventListener('click', function (e) {
+    var nav = e.target.closest('[data-rev-nav]')
+    var pageBtn = e.target.closest('[data-rev-page]')
+    if (nav) {
+      revPage = nav.getAttribute('data-rev-nav') === 'next'
+        ? Math.min(TOTAL_PAGES, revPage + 1)
+        : Math.max(1, revPage - 1)
+      renderReviews()
+    } else if (pageBtn) {
+      revPage = Number(pageBtn.getAttribute('data-rev-page'))
+      renderReviews()
+    }
+  })
+
+  var revOverlay = document.getElementById('rev-modal')
+  var revStepEl = document.getElementById('rev-step')
+  var revState = { step: 'rate', productStars: 0, storeStars: 0, youtube: '', email: '', displayName: '', anonymous: false, body: '' }
+  function closeRev() { revOverlay.hidden = true }
+  function starBtns(value, which) {
+    var html = '<div class="eh-rev-stars" role="radiogroup" aria-label="Puan">'
+    for (var n = 1; n <= 5; n += 1) {
+      html += '<button type="button" class="' + (n <= value ? 'is-on' : '') + '" data-rev-star="' + n + '" data-rev-which="' + which + '" aria-label="' + n + ' yıldız">★</button>'
+    }
+    return html + '</div><div class="eh-rev-cap"><span>Kötü</span><span>Harika</span></div>'
+  }
+  function drawRev() {
+    var s = revState.step
+    if (s === 'rate') {
+      revStepEl.innerHTML = '<h2>Bu ürünü nasıl değerlendirirsiniz?</h2><p>Deneyiminiz hakkında biraz bilgi paylaşırsanız çok memnun oluruz.</p><img class="eh-rev-photo" src="/g1.webp" alt=""><strong class="eh-rev-pname">EforHug™ Isıtmalı Battaniye</strong>' + starBtns(revState.productStars, 'product')
+    } else if (s === 'thanks') {
+      revStepEl.innerHTML = '<h2>Değerlendirmeniz için teşekkürler!</h2><p>İşleniyor ve yakında mağazada görünecek.</p><h2>Bizimle alışveriş deneyiminizi paylaşmak ister misiniz?</h2>' + starBtns(revState.storeStars, 'store') + '<button type="button" class="eh-rev-primary" data-rev-skip>Kapat</button>'
+    } else if (s === 'media') {
+      revStepEl.innerHTML = '<h2>Bir fotoğraf veya video paylaşın</h2><p>Değerlendirmenizi desteklemek için bir fotoğraf veya video yükleyin.</p><label class="eh-rev-drop"><input type="file" accept="image/*,video/*" hidden><span class="eh-rev-up">↑</span><span><strong>Yüklemek için tıklayın</strong> veya sürükle ve bırak</span></label><label class="eh-rev-field">YouTube URL<input data-rev-field="youtube" placeholder="Youtube URL\'nizi buraya yapıştırın"></label><div class="eh-rev-nav"><button type="button" class="eh-rev-back" data-rev-to="thanks">← Geri</button><button type="button" class="eh-rev-primary" data-rev-to="about">İleri</button></div>'
+    } else if (s === 'about') {
+      revStepEl.innerHTML = '<h2>Sizin Hakkınızda</h2><p>Lütfen bize kendiniz hakkında daha fazla bilgi verin.</p><label class="eh-rev-field">E-posta adresi (Gerekli)<input type="email" data-rev-field="email" placeholder="E-posta adresinizi girin"></label><p class="eh-rev-hint">Gizliliğinizi korumak için</p><label class="eh-rev-field">Görünen isim (Gerekli)<input data-rev-field="displayName" placeholder="Görünen isminizi girin"></label><label class="eh-rev-check"><input type="checkbox" data-rev-anon> Anonim değerlendirme</label><div class="eh-rev-nav"><button type="button" class="eh-rev-back" data-rev-to="media">← Geri</button><button type="button" class="eh-rev-primary" data-rev-to="content">İleri</button></div>'
+    } else if (s === 'content') {
+      revStepEl.innerHTML = '<strong class="eh-rev-pname">EforHug™ Isıtmalı Battaniye</strong>' + starBtns(revState.productStars, 'product') + '<label class="eh-rev-field">Değerlendirme içeriği (Gerekli)<textarea rows="5" data-rev-field="body" placeholder="Buraya yazmaya başlayın..."></textarea></label><p class="eh-rev-legal">Değerlendirmenizi göndererek şartlar ve koşullarımızı kabul etmiş olursunuz.</p><div class="eh-rev-nav"><button type="button" class="eh-rev-back" data-rev-to="about">← Geri</button><button type="button" class="eh-rev-primary" data-rev-to="done">İleri</button></div>'
+    } else {
+      revStepEl.innerHTML = '<h2>Değerlendirmeniz için teşekkürler!</h2><p>Gönderiniz alındı. Yayınlanmadan önce incelenir, bu yüzden sitede hemen görünmez.</p><button type="button" class="eh-rev-primary" data-rev-skip>Kapat</button>'
+    }
+  }
+  document.getElementById('write-review').onclick = function () {
+    revState = { step: 'rate', productStars: 0, storeStars: 0, youtube: '', email: '', displayName: '', anonymous: false, body: '' }
+    drawRev()
+    revOverlay.hidden = false
+  }
+  document.getElementById('rev-x').onclick = closeRev
+  revOverlay.addEventListener('click', function (e) {
+    if (e.target === revOverlay) closeRev()
+  })
+  revStepEl.addEventListener('click', function (e) {
+    var star = e.target.closest('[data-rev-star]')
+    if (star) {
+      var n = Number(star.getAttribute('data-rev-star'))
+      if (star.getAttribute('data-rev-which') === 'store') {
+        revState.storeStars = n
+        revState.step = 'media'
+      } else {
+        revState.productStars = n
+        if (revState.step === 'rate') revState.step = 'thanks'
+      }
+      drawRev()
+      return
+    }
+    var skip = e.target.closest('[data-rev-skip]')
+    if (skip) { closeRev(); return }
+    var to = e.target.closest('[data-rev-to]')
+    if (to) {
+      var next = to.getAttribute('data-rev-to')
+      if (next === 'content' && (!revState.email.trim() || !revState.displayName.trim())) return
+      if (next === 'done' && !revState.body.trim()) return
+      revState.step = next
+      drawRev()
+    }
+  })
+  revStepEl.addEventListener('input', function (e) {
+    var field = e.target.getAttribute && e.target.getAttribute('data-rev-field')
+    if (field) revState[field] = e.target.value
+    if (e.target.hasAttribute && e.target.hasAttribute('data-rev-anon')) revState.anonymous = e.target.checked
+  })
 })
 </script>
 </body>
